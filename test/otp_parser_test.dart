@@ -1,4 +1,3 @@
-import 'package:authenticator/models/otp_account.dart';
 import 'package:authenticator/services/otp_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -73,7 +72,8 @@ void main() {
         'otpauth://totp/CustomApp:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=CustomApp&digits=6&period=30&image=https://example.com/icon.png',
       );
 
-      expect(account.customParameters, {'image': 'https://example.com/icon.png'});
+      expect(
+          account.customParameters, {'image': 'https://example.com/icon.png'});
     });
 
     test('8. TOTP with issuer only in label (no query issuer)', () {
@@ -227,7 +227,8 @@ void main() {
 
     test('throws on unsupported type', () {
       expect(
-        () => OtpAuthParser.parse('otpauth://motp/test?secret=JBSWY3DPEHPK3PXP'),
+        () =>
+            OtpAuthParser.parse('otpauth://motp/test?secret=JBSWY3DPEHPK3PXP'),
         throwsFormatException,
       );
     });
