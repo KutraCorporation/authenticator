@@ -1,88 +1,62 @@
 # Kutra Authenticator
 
-Kutra Authenticator, `otpauth://totp` protokolünü destekleyen modern bir Flutter tabanlı iki faktörlü doğrulama uygulamasıdır. QR kod okuma, manuel otpauth bağlantısı ekleme, güvenli yerel saklama ve zaman bazlı tek kullanımlık kod üretimi sunar.
+A privacy-first, cross-platform authentication system built for modern applications.
 
-Uygulama Kutra web sitesinin koyu, cyan vurgulu ve minimal ürün tasarım dilini takip eder.
+Kutra Authenticator is not just a login system — it is a secure identity layer designed for offline-first usage, encrypted backups, and full OTPAuth compatibility.
 
-## Özellikler
+## 🚀 Vision
 
-- QR kod ile TOTP hesabı ekleme
-- `otpauth://totp` bağlantılarını manuel ekleme
-- SHA1, SHA256 ve SHA512 algoritmalarıyla TOTP üretimi
-- 6, 7 ve 8 haneli doğrulama kodu desteği
-- 10-120 saniye arası period desteği
-- Kod kopyalama
-- Hesap silme
-- `flutter_secure_storage` ile cihazda güvenli saklama
-- Android ve iOS kamera izni desteği
+Replace fragmented authentication apps with a unified, open, and secure identity ecosystem.
 
-## Teknoloji
+## ⚙️ Core Features
 
-- Flutter
-- Dart
-- `mobile_scanner`
-- `flutter_secure_storage`
-- `crypto`
+- 🔐 OTPAuth-compatible TOTP generator (RFC 6238)
+- 📱 Cross-platform support (Flutter: Android, iOS, Windows, macOS, Linux)
+- 🧠 Offline-first architecture (no mandatory cloud dependency)
+- 🔑 Secure local encrypted storage
+- 📷 QR code scanning and provisioning support
+- 🔄 Import / export encrypted vault
+- 🌐 Optional cloud sync (end-to-end encrypted)
 
-## Kurulum
+## 🧩 Architecture
 
-Flutter SDK kurulu olmalıdır.
+- Flutter (UI layer)
+- TypeScript SDK (web integration)
+- Dart OTPAuth parser (core library)
+
+## 🔐 Security Model
+
+- Secrets never leave device unencrypted
+- AES-256 encrypted local storage
+- Optional device-to-device encrypted sync via mDNS or cloud relay
+- No tracking, no telemetry
+
+## 📲 Supported Platforms
+
+- Android (APK / AAB)
+- iOS (IPA)
+- Windows (EXE)
+- macOS (DMG)
+- Linux (AppImage / Flatpak)
+
+## 🛠️ Installation
 
 ```bash
+git clone https://github.com/KutraCorporation/authenticator.git
+cd authenticator
 flutter pub get
-```
-
-## Çalıştırma
-
-Bağlı cihaz veya emülatörde çalıştırmak için:
-
-```bash
 flutter run
 ```
 
-Web sunucusu olarak çalıştırmak için:
+## 🤝 Contributing
 
-```bash
-flutter run -d web-server --web-hostname 127.0.0.1 --web-port 5217
-```
+Kutra is open-source. Contributors can extend:
 
-## Test ve Analiz
+OTPAuth parsing engine
+encryption modules
+platform integrations
 
-Birim testleri çalıştırmak için:
+##  License
+Open-source (MIT / Apache 2.0 depending on module)
 
-```bash
-flutter test
-```
-
-Statik analiz için:
-
-```bash
-flutter analyze
-```
-
-## Otpauth Formatı
-
-Desteklenen bağlantı formatı:
-
-```text
-otpauth://totp/Issuer:account@example.com?secret=BASE32SECRET&issuer=Issuer&algorithm=SHA1&digits=6&period=30
-```
-
-Zorunlu alan:
-
-- `secret`
-
-Opsiyonel alanlar:
-
-- `issuer`
-- `algorithm`
-- `digits`
-- `period`
-
-## Güvenlik Notları
-
-Hesap verileri cihaz üzerinde güvenli depolama alanında tutulur. Secret değerleri dış servise gönderilmez. QR koddan okunan veya manuel girilen veriler yalnızca cihazdaki TOTP kod üretimi için kullanılır.
-
-## Lisans
-
-Bu proje `LICENSE` dosyasında belirtilen lisans koşullarıyla dağıtılır.
+> Built with privacy, simplicity, and developer freedom in mind.<br/>Kutra Corporation — Beyond Limits.
