@@ -538,7 +538,7 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
                       padding: EdgeInsets.fromLTRB(hp, 0, hp, 80),
                       sliver: SliverList.separated(
                         itemCount: _accounts.length,
-                        separatorBuilder: (_, _) => const SizedBox(height: 10),
+                        separatorBuilder: (_, __) => const SizedBox(height: 10),
                         itemBuilder: (context, index) {
                           final account = _accounts[index];
                           return _OtpCard(
