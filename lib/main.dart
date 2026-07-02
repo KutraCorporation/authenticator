@@ -73,35 +73,67 @@ class _LockGate extends StatefulWidget {
   State<_LockGate> createState() => _LockGateState();
 }
 
-class _LockGateState extends State<_LockGate> {
+class _LockGateState extends State<_LockGate> with WidgetsBindingObserver {
   final _store = SecureAccountStore();
   final _auth = LocalAuthentication();
   bool _locked = true;
   bool _denied = false;
+  bool _isAuthenticating = false;
+  bool? _biometricAvailable;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _checkBiometric();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      if (!_locked && !_denied) {
+        setState(() {
+          _locked = true;
+          _isAuthenticating = false;
+        });
+      }
+    }
   }
 
   Future<void> _checkBiometric() async {
     final enabled = await _store.getBiometricEnabled();
+    if (!mounted) return;
     if (!enabled) {
-      if (!mounted) return;
       setState(() => _locked = false);
       return;
     }
-    await _authenticate();
+    _authenticate(shouldCheckAvailability: true);
   }
 
-  Future<void> _authenticate() async {
-    final available = await _auth.canCheckBiometrics || await _auth.isDeviceSupported();
-    if (!available) {
+  Future<void> _authenticate({bool shouldCheckAvailability = false}) async {
+    if (_isAuthenticating) return;
+    _isAuthenticating = true;
+
+    if (shouldCheckAvailability || _biometricAvailable == null) {
+      final results = await Future.wait([
+        _auth.canCheckBiometrics,
+        _auth.isDeviceSupported(),
+      ]);
+      _biometricAvailable = results[0] || results[1];
       if (!mounted) return;
-      setState(() => _locked = false);
-      return;
+      if (!_biometricAvailable!) {
+        _isAuthenticating = false;
+        setState(() => _locked = false);
+        return;
+      }
     }
+
     try {
       final success = await _auth.authenticate(
         localizedReason: 'Kutra Authenticator\'ı açmak için kimlik doğrulaması yapın.',
@@ -111,12 +143,14 @@ class _LockGateState extends State<_LockGate> {
         ),
       );
       if (!mounted) return;
+      _isAuthenticating = false;
       if (success) {
         setState(() => _locked = false);
       } else {
         setState(() => _denied = true);
       }
     } catch (_) {
+      _isAuthenticating = false;
       if (!mounted) return;
       setState(() => _locked = false);
     }
@@ -124,8 +158,16 @@ class _LockGateState extends State<_LockGate> {
 
   @override
   Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 200),
+      child: _buildScreen(),
+    );
+  }
+
+  Widget _buildScreen() {
     if (_denied) {
       return Scaffold(
+        key: const ValueKey('denied'),
         backgroundColor: KutraColors.black,
         body: Center(
           child: Padding(
@@ -148,12 +190,12 @@ class _LockGateState extends State<_LockGate> {
                 ),
                 const SizedBox(height: 32),
                 FilledButton.icon(
-                  onPressed: () {
+                  onPressed: _isAuthenticating ? null : () {
                     setState(() => _denied = false);
                     _authenticate();
                   },
                   icon: const Icon(Icons.fingerprint),
-                  label: const Text('Tekrar dene'),
+                  label: Text(_isAuthenticating ? 'Doğrulanıyor...' : 'Tekrar dene'),
                   style: FilledButton.styleFrom(
                     backgroundColor: KutraColors.cyan,
                     foregroundColor: KutraColors.black,
@@ -167,20 +209,15 @@ class _LockGateState extends State<_LockGate> {
     }
     if (_locked) {
       return Scaffold(
+        key: const ValueKey('locked'),
         backgroundColor: KutraColors.black,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 64,
-                height: 64,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  gradient: const LinearGradient(colors: [KutraColors.cyan, KutraColors.purple]),
-                ),
-                child: const Text('K', style: TextStyle(color: KutraColors.black, fontSize: 32, fontWeight: FontWeight.w900)),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset('assets/logo.png', width: 64, height: 64),
               ),
               const SizedBox(height: 16),
               const Text('Kutra', style: TextStyle(color: KutraColors.text, fontSize: 22, fontWeight: FontWeight.w900)),
@@ -191,7 +228,7 @@ class _LockGateState extends State<_LockGate> {
         ),
       );
     }
-    return const AuthenticatorHome();
+    return const AuthenticatorHome(key: ValueKey('home'));
   }
 }
 
@@ -467,7 +504,8 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LayoutBuilder(
+      body: SafeArea(
+        child: LayoutBuilder(
         builder: (context, constraints) {
           final isDesktop = constraints.maxWidth >= 600;
           final hp = isDesktop ? 40.0 : 16.0;
@@ -558,6 +596,7 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
           );
         },
       ),
+      ),
       floatingActionButton: _accounts.isNotEmpty && !_loading
           ? FloatingActionButton(
               onPressed: _openScanner,
@@ -609,15 +648,9 @@ class _MobileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
-          width: 36,
-          height: 36,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            gradient: const LinearGradient(colors: [KutraColors.cyan, KutraColors.purple]),
-          ),
-          child: const Text('K', style: TextStyle(color: KutraColors.black, fontSize: 20, fontWeight: FontWeight.w900)),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.asset('assets/logo.png', width: 36, height: 36),
         ),
         const SizedBox(width: 10),
         const Expanded(
@@ -690,25 +723,9 @@ class _DesktopHeader extends StatelessWidget {
           children: [
             Row(
               children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: KutraColors.borderStrong),
-                    gradient: const LinearGradient(
-                      colors: [KutraColors.cyan, KutraColors.purple],
-                    ),
-                  ),
-                  child: const Text(
-                    'K',
-                    style: TextStyle(
-                      color: KutraColors.black,
-                      fontSize: 25,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset('assets/logo.png', width: 44, height: 44),
                 ),
                 const SizedBox(width: 12),
                 const Expanded(

@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.kutra.authenticator" "\0"
-            VALUE "FileDescription", "authenticator" "\0"
+            VALUE "CompanyName", "Kutra" "\0"
+            VALUE "FileDescription", "Kutra Authenticator" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "authenticator" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.kutra.authenticator. All rights reserved." "\0"
-            VALUE "OriginalFilename", "authenticator.exe" "\0"
-            VALUE "ProductName", "authenticator" "\0"
+            VALUE "InternalName", "Kutra Authenticator" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 Kutra. All rights reserved." "\0"
+            VALUE "OriginalFilename", "kutra_authenticator.exe" "\0"
+            VALUE "ProductName", "Kutra Authenticator" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

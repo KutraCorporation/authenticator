@@ -8,6 +8,7 @@ class SecureAccountStore {
   static const _key = 'kutra_accounts_v2';
   static const _biometricKey = 'kutra_biometric_enabled';
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  bool? _cachedBiometricEnabled;
 
   Future<List<OtpAccount>> load() async {
     final raw = await _storage.read(key: _key);
@@ -26,11 +27,14 @@ class SecureAccountStore {
   }
 
   Future<bool> getBiometricEnabled() async {
+    if (_cachedBiometricEnabled != null) return _cachedBiometricEnabled!;
     final raw = await _storage.read(key: _biometricKey);
-    return raw == 'true';
+    _cachedBiometricEnabled = raw == 'true';
+    return _cachedBiometricEnabled!;
   }
 
   Future<void> setBiometricEnabled(bool enabled) {
+    _cachedBiometricEnabled = enabled;
     return _storage.write(key: _biometricKey, value: enabled.toString());
   }
 }
