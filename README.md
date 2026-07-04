@@ -1,16 +1,32 @@
-# Kutra Authenticator
+<p align="center">
+  <img src="assets/logo.png" alt="Kutra Authenticator Logo" width="120"/>
+</p>
 
-A privacy-first, cross-platform authentication system built for modern applications.
+<h1 align="center">Kutra Authenticator</h1>
 
-Kutra Authenticator is not just a login system — it is a secure identity layer designed for offline-first usage, encrypted backups, and full OTPAuth compatibility.
+<p align="center">
+  <b>A privacy-first, cross-platform authentication system built for modern applications and developers.</b>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter" />
+  <img src="https://img.shields.io/badge/License-MIT/Apache--2.0-blue?style=for-the-badge"  alt="License"/>
+  <img src="https://img.shields.io/badge/Platforms-Mobile%20%7C%20Desktop-green?style=for-the-badge" alt="Platforms" />
+  <img src="https://img.shields.io/github/stars/KutraCorporation/authenticator?style=for-the-badge" alt="Stars" />
+  <img src="https://img.shields.io/github/forks/KutraCorporation/authenticator?style=for-the-badge" alt="Forks" />
+</p>
+
+---
+
+Kutra Authenticator is not just a login system — it is a secure identity layer designed for offline-first usage, encrypted backups, and full OTPAuth compatibility. Unlike rigid alternatives, Kutra offers a **Developer Mode** with fully customizable OTP parameters.
 
 ## 🚀 Vision
 
-Replace fragmented authentication apps with a unified, open, and secure identity ecosystem.
+Replace fragmented authentication apps with a unified, open, and secure identity ecosystem. **Beyond Limits.**
 
 ## ⚙️ Core Features
 
-- 🔐 OTPAuth-compatible TOTP generator (RFC 6238)
+- 🔐 **OTPAuth-compatible TOTP/HOTP generator** (RFC 6238 / RFC 4226)
 - 📱 Cross-platform support (Flutter: Android, iOS, Windows, macOS, Linux)
 - 🧠 Offline-first architecture (no mandatory cloud dependency)
 - 🔑 Secure local encrypted storage
@@ -20,9 +36,9 @@ Replace fragmented authentication apps with a unified, open, and secure identity
 
 ## 🧩 Architecture
 
-- Flutter (UI layer)
-- TypeScript SDK (web integration)
-- Dart OTPAuth parser (core library)
+- **UI Layer:** Flutter (Material 3 / Cupertino)
+- **Core Logic:** Dart OTPAuth Parser (Custom RFC implementation)
+- **Storage:** `flutter_secure_storage` (Keychain/Keystore backed)
 
 ## 🔐 Security Model
 
@@ -33,11 +49,11 @@ Replace fragmented authentication apps with a unified, open, and secure identity
 
 ## 📲 Supported Platforms
 
-- Android (APK / AAB)
-- iOS (IPA)
-- Windows (EXE)
-- macOS (DMG)
-- Linux (AppImage / Flatpak)
+- 🤖 **Android** (APK / AAB)
+- 🍎 **iOS** (IPA)
+- 🪟 **Windows** (EXE / MSIX)
+- 🍏 **macOS** (DMG)
+- 🐧 **Linux** (AppImage / Flatpak)
 
 ## 🛠️ Installation
 

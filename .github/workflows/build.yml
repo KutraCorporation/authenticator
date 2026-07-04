@@ -1,84 +1,112 @@
-name: Build (APK + Windows)
+name: Kutra Build & Release
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-android:
-    name: Android APK Build
+    name: Build Android (APK & AAB)
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: 'zulu'
           java-version: '17'
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: '3.24.x'
+          channel: 'stable'
           cache: true
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: flutter pub get
 
-      - name: Flutter Analyze
-        run: flutter analyze || true
+      - name: Decode Android Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/kutra_key.jks
 
-      - name: Test
-        run: flutter test
+      - name: Create key.properties
+        env:
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          echo "storePassword=$STORE_PASSWORD" > android/key.properties
+          echo "keyPassword=$KEY_PASSWORD" >> android/key.properties
+          echo "keyAlias=$KEY_ALIAS" >> android/key.properties
+          echo "storeFile=kutra_key.jks" >> android/key.properties
 
-      - name: Build APK
-        run: flutter build apk --release
+      - name: Build APK (Release)
+        run: flutter build apk --release --split-per-abi
 
-      - name: Upload APK
+      - name: Build AppBundle (Release)
+        run: flutter build appbundle --release
+
+      - name: Upload Android Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: android-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: android-release
+          path: |
+            build/app/outputs/flutter-apk/*.apk
+            build/app/outputs/bundle/release/*.aab
 
-  build-windows:
-    name: Windows EXE Build
-    runs-on: windows-latest
-
+  build-ios:
+    name: Build iOS (Simulator/No-Sign)
+    runs-on: macos-latest
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: '3.24.x'
+          channel: 'stable'
           cache: true
 
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Flutter Analyze
-        run: flutter analyze || true
-
-      - name: Test
-        run: flutter test
-
-      - name: Enable Windows
-        run: flutter config --enable-windows-desktop
-
-      - name: Build Windows
-        run: flutter build windows --release
-
-      - name: Zip build
+      - name: Install Dependencies
         run: |
-          powershell Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath windows-build.zip
+          flutter clean
+          flutter pub get
+          cd ios
+          pod install --repo-update
 
-      - name: Upload EXE
+      - name: Build iOS (No Codesign)
+        run: flutter build ios --release --no-codesign
+
+      - name: Upload iOS Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: windows-exe
-          path: windows-build.zip
+          name: ios-build-no-sign
+          path: build/ios/iphoneos/*.app
+
+  build-web:
+    name: Build Web (PWA)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.x'
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        run: flutter pub get

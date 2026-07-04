@@ -1,0 +1,34 @@
+name: Security & Quality Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security-scan:
+    name: Flutter Analyze & Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.x'
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Run Flutter Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Check for Vulnerable Dependencies
+        run: flutter pub outdated --mode=null-safety
+
+      - name: Verify Formatting
+        run: dart format --output=none --set-exit-if-changed .
