@@ -57,7 +57,7 @@ jobs:
         run: flutter build appbundle --release
 
       - name: Upload Android Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: android-release
           path: |
@@ -89,7 +89,7 @@ jobs:
         run: flutter build ios --release --no-codesign
 
       - name: Upload iOS Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-build-no-sign
           path: build/ios/iphoneos/*.app
