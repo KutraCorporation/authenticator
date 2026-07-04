@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -96,7 +97,8 @@ class _LockGateState extends State<_LockGate> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
       if (!_locked && !_denied) {
         setState(() {
           _locked = true;
@@ -175,11 +177,15 @@ class _LockGateState extends State<_LockGate> with WidgetsBindingObserver {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.fingerprint, color: KutraColors.danger, size: 64),
+                const Icon(Icons.fingerprint,
+                    color: KutraColors.danger, size: 64),
                 const SizedBox(height: 24),
                 const Text(
                   'Kimlik doğrulaması gerekiyor',
-                  style: TextStyle(color: KutraColors.text, fontSize: 20, fontWeight: FontWeight.w900),
+                  style: TextStyle(
+                      color: KutraColors.text,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
@@ -190,12 +196,15 @@ class _LockGateState extends State<_LockGate> with WidgetsBindingObserver {
                 ),
                 const SizedBox(height: 32),
                 FilledButton.icon(
-                  onPressed: _isAuthenticating ? null : () {
-                    setState(() => _denied = false);
-                    _authenticate();
-                  },
+                  onPressed: _isAuthenticating
+                      ? null
+                      : () {
+                          setState(() => _denied = false);
+                          _authenticate();
+                        },
                   icon: const Icon(Icons.fingerprint),
-                  label: Text(_isAuthenticating ? 'Doğrulanıyor...' : 'Tekrar dene'),
+                  label: Text(
+                      _isAuthenticating ? 'Doğrulanıyor...' : 'Tekrar dene'),
                   style: FilledButton.styleFrom(
                     backgroundColor: KutraColors.cyan,
                     foregroundColor: KutraColors.black,
@@ -220,9 +229,17 @@ class _LockGateState extends State<_LockGate> with WidgetsBindingObserver {
                 child: Image.asset('assets/logo.png', width: 64, height: 64),
               ),
               const SizedBox(height: 16),
-              const Text('Kutra', style: TextStyle(color: KutraColors.text, fontSize: 22, fontWeight: FontWeight.w900)),
+              const Text('Kutra',
+                  style: TextStyle(
+                      color: KutraColors.text,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900)),
               const SizedBox(height: 24),
-              const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: KutraColors.cyan)),
+              const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                      strokeWidth: 2, color: KutraColors.cyan)),
             ],
           ),
         ),
@@ -326,7 +343,7 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
 
   Future<void> _importAccounts() async {
     try {
-      final result = await FilePicker.platform.pickFiles(
+      final result = await FilePicker.pickFiles(
         type: FileType.any,
         withData: true,
       );
@@ -354,7 +371,8 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: KutraColors.panel,
-        title: const Text('Şifreli Yedek Oluştur', style: TextStyle(color: KutraColors.text)),
+        title: const Text('Şifreli Yedek Oluştur',
+            style: TextStyle(color: KutraColors.text)),
         content: TextField(
           controller: passwordController,
           obscureText: true,
@@ -366,14 +384,19 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('İptal')),
-          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Oluştur')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('İptal')),
+          FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Oluştur')),
         ],
       ),
     );
     if (confirmed != true || passwordController.text.isEmpty) return;
     try {
-      final encrypted = BackupService.exportEncrypted(_accounts, passwordController.text);
+      final encrypted =
+          BackupService.exportEncrypted(_accounts, passwordController.text);
       await Share.share(encrypted, subject: 'Kutra Şifreli Yedek');
       if (!mounted) return;
       _showMessage('Şifreli yedek paylaşıldı.');
@@ -386,7 +409,7 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
     final passwordController = TextEditingController();
     late final String encryptedData;
     try {
-      final pickResult = await FilePicker.platform.pickFiles(
+      final pickResult = await FilePicker.pickFiles(
         type: FileType.any,
         withData: true,
       );
@@ -404,7 +427,8 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: KutraColors.panel,
-        title: const Text('Şifreli Yedeği Geri Yükle', style: TextStyle(color: KutraColors.text)),
+        title: const Text('Şifreli Yedeği Geri Yükle',
+            style: TextStyle(color: KutraColors.text)),
         content: TextField(
           controller: passwordController,
           obscureText: true,
@@ -416,14 +440,19 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('İptal')),
-          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Geri Yükle')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('İptal')),
+          FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Geri Yükle')),
         ],
       ),
     );
     if (confirmed != true || passwordController.text.isEmpty) return;
     try {
-      final imported = BackupService.importEncrypted(encryptedData, passwordController.text);
+      final imported =
+          BackupService.importEncrypted(encryptedData, passwordController.text);
       setState(() => _accounts
         ..clear()
         ..addAll(imported));
@@ -431,7 +460,8 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
       if (!mounted) return;
       _showMessage('${imported.length} hesap geri yüklendi.');
     } catch (e) {
-      _showMessage('Geri yükleme başarısız: ${e is FormatException ? e.message : e}');
+      _showMessage(
+          'Geri yükleme başarısız: ${e is FormatException ? e.message : e}');
     }
   }
 
@@ -450,33 +480,59 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
           children: [
             Container(
               margin: const EdgeInsets.symmetric(vertical: 12),
-              width: 32, height: 4,
-              decoration: BoxDecoration(color: KutraColors.dim, borderRadius: BorderRadius.circular(2)),
+              width: 32,
+              height: 4,
+              decoration: BoxDecoration(
+                  color: KutraColors.dim,
+                  borderRadius: BorderRadius.circular(2)),
             ),
             const Padding(
               padding: EdgeInsets.only(bottom: 16),
-              child: Text('Ayarlar', style: TextStyle(color: KutraColors.text, fontSize: 18, fontWeight: FontWeight.w900)),
+              child: Text('Ayarlar',
+                  style: TextStyle(
+                      color: KutraColors.text,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900)),
             ),
             ListTile(
-              leading: const Icon(Icons.file_download_outlined, color: KutraColors.cyan),
-              title: const Text('Dışa Aktar (JSON)', style: TextStyle(color: KutraColors.text)),
-              onTap: () { Navigator.pop(ctx); _exportAccounts(); },
+              leading: const Icon(Icons.file_download_outlined,
+                  color: KutraColors.cyan),
+              title: const Text('Dışa Aktar (JSON)',
+                  style: TextStyle(color: KutraColors.text)),
+              onTap: () {
+                Navigator.pop(ctx);
+                _exportAccounts();
+              },
             ),
             ListTile(
-              leading: const Icon(Icons.file_upload_outlined, color: KutraColors.cyan),
-              title: const Text('İçe Aktar (JSON)', style: TextStyle(color: KutraColors.text)),
-              onTap: () { Navigator.pop(ctx); _importAccounts(); },
+              leading: const Icon(Icons.file_upload_outlined,
+                  color: KutraColors.cyan),
+              title: const Text('İçe Aktar (JSON)',
+                  style: TextStyle(color: KutraColors.text)),
+              onTap: () {
+                Navigator.pop(ctx);
+                _importAccounts();
+              },
             ),
             const Divider(color: KutraColors.border, height: 1),
             ListTile(
-              leading: const Icon(Icons.lock_outline, color: KutraColors.purple),
-              title: const Text('Şifreli Yedek Oluştur', style: TextStyle(color: KutraColors.text)),
-              onTap: () { Navigator.pop(ctx); _exportEncryptedBackup(); },
+              leading:
+                  const Icon(Icons.lock_outline, color: KutraColors.purple),
+              title: const Text('Şifreli Yedek Oluştur',
+                  style: TextStyle(color: KutraColors.text)),
+              onTap: () {
+                Navigator.pop(ctx);
+                _exportEncryptedBackup();
+              },
             ),
             ListTile(
               leading: const Icon(Icons.lock_open, color: KutraColors.purple),
-              title: const Text('Şifreli Yedeği Geri Yükle', style: TextStyle(color: KutraColors.text)),
-              onTap: () { Navigator.pop(ctx); _importEncryptedBackup(); },
+              title: const Text('Şifreli Yedeği Geri Yükle',
+                  style: TextStyle(color: KutraColors.text)),
+              onTap: () {
+                Navigator.pop(ctx);
+                _importEncryptedBackup();
+              },
             ),
             const Divider(color: KutraColors.border, height: 1),
             StatefulBuilder(
@@ -485,7 +541,8 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
                   Icons.fingerprint,
                   color: biometricEnabled ? KutraColors.cyan : KutraColors.dim,
                 ),
-                title: const Text('Biyometrik Kilit', style: TextStyle(color: KutraColors.text)),
+                title: const Text('Biyometrik Kilit',
+                    style: TextStyle(color: KutraColors.text)),
                 value: biometricEnabled,
                 activeColor: KutraColors.cyan,
                 onChanged: (value) async {
@@ -506,56 +563,80 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
     return Scaffold(
       body: SafeArea(
         child: LayoutBuilder(
-        builder: (context, constraints) {
-          final isDesktop = constraints.maxWidth >= 600;
-          final hp = isDesktop ? 40.0 : 16.0;
+          builder: (context, constraints) {
+            final isDesktop = constraints.maxWidth >= 600;
+            final hp = isDesktop ? 40.0 : 16.0;
 
-          return Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 840),
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(hp, isDesktop ? 20 : 8, hp, 8),
-                      child: _Header(
-                        onScan: _openScanner,
-                        onSettings: _showSettings,
-                        isDesktop: isDesktop,
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(hp, 0, hp, 16),
-                      child: _ManualEntry(
-                        controller: _manualController,
-                        onSubmit: () => _tryAdd(_manualController.text),
-                      ),
-                    ),
-                  ),
-                  if (_loading)
-                    const SliverFillRemaining(
-                      child: Center(child: CircularProgressIndicator()),
-                    )
-                  else if (_accounts.isEmpty)
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: _EmptyState(onScan: _openScanner),
-                    )
-                  else if (isDesktop)
-                    SliverPadding(
-                      padding: EdgeInsets.fromLTRB(hp, 0, hp, 24),
-                      sliver: SliverGrid(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 12,
-                          crossAxisSpacing: 12,
-                          childAspectRatio: 1.8,
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 840),
+                child: CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding:
+                            EdgeInsets.fromLTRB(hp, isDesktop ? 20 : 8, hp, 8),
+                        child: _Header(
+                          onScan: _openScanner,
+                          onSettings: _showSettings,
+                          isDesktop: isDesktop,
                         ),
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(hp, 0, hp, 16),
+                        child: _ManualEntry(
+                          controller: _manualController,
+                          onSubmit: () => _tryAdd(_manualController.text),
+                        ),
+                      ),
+                    ),
+                    if (_loading)
+                      const SliverFillRemaining(
+                        child: Center(child: CircularProgressIndicator()),
+                      )
+                    else if (_accounts.isEmpty)
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: _EmptyState(onScan: _openScanner),
+                      )
+                    else if (isDesktop)
+                      SliverPadding(
+                        padding: EdgeInsets.fromLTRB(hp, 0, hp, 24),
+                        sliver: SliverGrid(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 12,
+                            crossAxisSpacing: 12,
+                            childAspectRatio: 1.8,
+                          ),
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              final account = _accounts[index];
+                              return _OtpCard(
+                                account: account,
+                                now: _now,
+                                onRemove: () => _remove(account),
+                                onAdvance: account.type == 'hotp'
+                                    ? () => _advanceHotp(account)
+                                    : null,
+                                compact: true,
+                              );
+                            },
+                            childCount: _accounts.length,
+                          ),
+                        ),
+                      )
+                    else
+                      SliverPadding(
+                        padding: EdgeInsets.fromLTRB(hp, 0, hp, 80),
+                        sliver: SliverList.separated(
+                          itemCount: _accounts.length,
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: 10),
+                          itemBuilder: (context, index) {
                             final account = _accounts[index];
                             return _OtpCard(
                               account: account,
@@ -564,38 +645,16 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
                               onAdvance: account.type == 'hotp'
                                   ? () => _advanceHotp(account)
                                   : null,
-                              compact: true,
                             );
                           },
-                          childCount: _accounts.length,
                         ),
                       ),
-                    )
-                  else
-                    SliverPadding(
-                      padding: EdgeInsets.fromLTRB(hp, 0, hp, 80),
-                      sliver: SliverList.separated(
-                        itemCount: _accounts.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 10),
-                        itemBuilder: (context, index) {
-                          final account = _accounts[index];
-                          return _OtpCard(
-                            account: account,
-                            now: _now,
-                            onRemove: () => _remove(account),
-                            onAdvance: account.type == 'hotp'
-                                ? () => _advanceHotp(account)
-                                : null,
-                          );
-                        },
-                      ),
-                    ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      ),
+            );
+          },
+        ),
       ),
       floatingActionButton: _accounts.isNotEmpty && !_loading
           ? FloatingActionButton(
@@ -940,7 +999,9 @@ class _OtpCard extends StatelessWidget {
 
     final codeFontSize = compact
         ? 26.0
-        : code.length > 8 ? 26.0 : 34.0;
+        : code.length > 8
+            ? 26.0
+            : 34.0;
 
     return Dismissible(
       key: ValueKey('otp_${account.secret}_${account.type}_${account.counter}'),
@@ -952,7 +1013,8 @@ class _OtpCard extends StatelessWidget {
           color: KutraColors.danger.withAlpha(40),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Icon(Icons.delete_outline, color: KutraColors.danger, size: 28),
+        child: const Icon(Icons.delete_outline,
+            color: KutraColors.danger, size: 28),
       ),
       confirmDismiss: (_) async {
         onRemove();
@@ -980,7 +1042,9 @@ class _OtpCard extends StatelessWidget {
                     border: Border.all(color: KutraColors.border),
                   ),
                   child: Icon(
-                    isHotp ? Icons.smart_button_outlined : Icons.shield_outlined,
+                    isHotp
+                        ? Icons.smart_button_outlined
+                        : Icons.shield_outlined,
                     color: KutraColors.cyan,
                     size: compact ? 18 : 22,
                   ),
@@ -1013,11 +1077,13 @@ class _OtpCard extends StatelessWidget {
                 ),
                 if (isHotp)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
                       color: KutraColors.purple.withAlpha(40),
                       borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: KutraColors.purple.withAlpha(80)),
+                      border:
+                          Border.all(color: KutraColors.purple.withAlpha(80)),
                     ),
                     child: Text(
                       'HOTP',
@@ -1043,14 +1109,14 @@ class _OtpCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: SelectableText(
-                  _groupCode(code),
-                  style: TextStyle(
-                    color: KutraColors.text,
-                    fontSize: codeFontSize,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0,
+                    _groupCode(code),
+                    style: TextStyle(
+                      color: KutraColors.text,
+                      fontSize: codeFontSize,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0,
+                    ),
                   ),
-                ),
                 ),
                 if (isHotp)
                   Padding(
