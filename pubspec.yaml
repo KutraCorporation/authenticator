@@ -2,7 +2,7 @@ name: authenticator
 description: "A secure cross-platform authentication app"
 publish_to: 'none'
 
-version: 0.1.3+4
+version: 0.1.4+5
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
