@@ -93,20 +93,3 @@ jobs:
         with:
           name: ios-build-no-sign
           path: build/ios/iphoneos/*.app
-
-  build-web:
-    name: Build Web (PWA)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.x'
-          channel: 'stable'
-          cache: true
-
-      - name: Install Dependencies
-        run: flutter pub get
