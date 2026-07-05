@@ -10,5 +10,7 @@
 -keep class com.google.zxing.** { *; }
 -keep class com.budius.** { *; }
 
+-keep class com.google.android.play.core.** { *; }
+
 -keepattributes *Annotation*
 -keepclassmembers class * implements java.io.Serializable
