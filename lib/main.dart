@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:share_plus/share_plus.dart' show Share;
+import 'package:share_plus/share_plus.dart' show SharePlus, ShareParams;
 
 import 'models/otp_account.dart';
 import 'services/account_store.dart';
@@ -338,7 +337,7 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
 
   Future<void> _exportAccounts() async {
     final json = BackupService.exportJson(_accounts);
-    await Share.share(json, subject: 'Kutra Authenticator Yedek');
+    await SharePlus.instance.share(ShareParams(text: json, subject: 'Kutra Authenticator Yedek'));
   }
 
   Future<void> _importAccounts() async {
@@ -397,7 +396,7 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
     try {
       final encrypted =
           BackupService.exportEncrypted(_accounts, passwordController.text);
-      await Share.share(encrypted, subject: 'Kutra Şifreli Yedek');
+      await SharePlus.instance.share(ShareParams(text: encrypted, subject: 'Kutra Şifreli Yedek'));
       if (!mounted) return;
       _showMessage('Şifreli yedek paylaşıldı.');
     } catch (e) {
@@ -544,7 +543,7 @@ class _AuthenticatorHomeState extends State<AuthenticatorHome> {
                 title: const Text('Biyometrik Kilit',
                     style: TextStyle(color: KutraColors.text)),
                 value: biometricEnabled,
-                activeColor: KutraColors.cyan,
+                activeTrackColor: KutraColors.cyan,
                 onChanged: (value) async {
                   await _store.setBiometricEnabled(value);
                   setInnerState(() {});
