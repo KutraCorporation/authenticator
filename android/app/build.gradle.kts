@@ -35,9 +35,9 @@ android {
         versionName = flutter.versionName
     }
 
-    signingConfigs {
-        create("release") {
-            if (keystorePropertiesFile.exists()) {
+    if (keystorePropertiesFile.exists()) {
+        signingConfigs {
+            create("release") {
                 storeFile = file(keystoreProperties["storeFile"] as String)
                 storePassword = keystoreProperties["storePassword"] as String
                 keyAlias = keystoreProperties["keyAlias"] as String
@@ -48,7 +48,9 @@ android {
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            if (keystorePropertiesFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
 
             isMinifyEnabled = true
             isShrinkResources = true
