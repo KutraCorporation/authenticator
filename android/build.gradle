@@ -9,6 +9,17 @@ rootProject.buildDir = "../build"
 
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
+
+    if (!project.extensions.findByName('flutter')) {
+        project.extensions.add('flutter', [
+            compileSdkVersion: 35,
+            minSdkVersion: 26,
+            targetSdkVersion: 35,
+            versionCode: 1,
+            versionName: '1.0',
+            ndkVersion: '27.0.12077973'
+        ])
+    }
 }
 
 subprojects {
