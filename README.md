@@ -20,7 +20,12 @@
 
 Kutra Authenticator is not just a login system — it is a secure identity layer designed for offline-first usage, encrypted backups, and full OTPAuth compatibility. Unlike rigid alternatives, Kutra offers a **Developer Mode** with fully customizable OTP parameters.
 
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FKutraCorporation%2Fauthenticator.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FKutraCorporation%2Fauthenticator?ref=badge_large)
+
 ## 🚀 Vision
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FKutraCorporation%2Fauthenticator.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FKutraCorporation%2Fauthenticator?ref=badge_shield)
+
 
 Replace fragmented authentication apps with a unified, open, and secure identity ecosystem. **Beyond Limits.**
 
