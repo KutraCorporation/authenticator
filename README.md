@@ -69,13 +69,14 @@ flutter pub get
 flutter run
 ```
 
-## 🤝 Contributing
+## Contribute
+We welcome your contributions!
 
-Kutra is open-source. Contributors can extend:
-
-OTPAuth parsing engine
-encryption modules
-platform integrations
+* Fork
+* Create a Feature branch (git checkout -b feature/amazing-feature)
+* Commit your changes (git commit -m 'Add amazing feature')
+* Push your branch (git push origin feature/amazing-feature)
+* Create a Pull Request
 
 ##  License
 Open-source (MIT / Apache 2.0 depending on module)
