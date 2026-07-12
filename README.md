@@ -14,6 +14,7 @@
   <img src="https://img.shields.io/badge/Platforms-Mobile%20%7C%20Desktop-green?style=for-the-badge" alt="Platforms" />
   <img src="https://img.shields.io/github/stars/KutraCorporation/authenticator?style=for-the-badge" alt="Stars" />
   <img src="https://img.shields.io/github/forks/KutraCorporation/authenticator?style=for-the-badge" alt="Forks" />
+  <img src="https://img.shields.io/github/last-commit/kutracorporation/authenticator?style=for-the-badge" alt="Last Commit" />
 </p>
 
 ---
