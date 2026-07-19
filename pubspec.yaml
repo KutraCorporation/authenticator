@@ -17,7 +17,7 @@ dependencies:
   local_auth: ^2.1.0
   mobile_scanner: ^7.3.0
   pointycastle: ^3.9.1
-  share_plus: ^13.2.0
+  share_plus: ^13.2.1
 
 dev_dependencies:
   flutter_test:
